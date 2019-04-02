@@ -1,0 +1,52 @@
+version: '3'
+services:
+    mysql:
+        build: ./bin/mysql
+        container_name: dev-mysql-5.7
+        restart: always
+        ports:
+            - '3307:3306'
+        volumes:
+            - './data/mysql:/var/lib/mysql'
+            - './logs/mysql:/var/log/mysql'
+            - './config/mysql/dump:/docker-entrypoint-initdb.d'
+        environment:
+            MYSQL_USER: user
+            MYSQL_PASSWORD: pass
+            MYSQL_DATABASE: db
+            MYSQL_ROOT_PASSWORD: root_password
+    phpmyadmin:
+        container_name: dev-phpmyadmin
+        image: phpmyadmin/phpmyadmin
+        links:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            PMA_USER: root
+            PMA_PASSWORD: root_password
+        ports:
+            - '8090:80'
+        volumes:
+            - /sessions
+    memcached:
+        container_name: dev-memcached
+        image: memcached
+        command: 'memcached -m 16m'
+    webserver:
+        build:
+            context: ./bin/webserver
+        container_name: dev-webserver-7.1
+        restart: always
+        ports:
+            - '8080:80'
+            - '8443:443'
+        links:
+            - mysql
+            - memcached
+        volumes:
+            - './..:/var/www/html'
+            - './config/php/php.ini:/usr/local/etc/php/php.ini'
+            - './config/apache2/sites-enabled:/etc/apache2/sites-enabled'
+            - './config/ssh:/tmp/.ssh'
+            - './logs/apache2:/var/log/apache2'

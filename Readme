@@ -1,0 +1,31 @@
+### Docker for development ###
+Setting up your environment
+1. Save your GitHub key under config/ssh/id_rsa
+2. Configure the ports that you want to use in docker-compose.yml
+2.1. ports:
+        - '8080:80'
+     Where the 8080 is the local port and 80 is the container port.
+     You can have more than one container using the same port, but no duplicated local ports.
+3. If you want to change the domain, change it under config/apache2/sites-enabled/default.config
+3.1. Include this domain to your host file.
+4. Create/Copy a .env file.
+5. Optional: Run a composer install in your project folder to speedup the process
+5.1. You can remove `composer commands from docker-entrypoint.sh` if you want, but you need to install all the dependencies in your environment.
+5.2. Database configuration example: `DATABASE_URL=mysql://root:root_password@mysql:3307/db`
+     Where mysql as host is the docker link name. Check docker-compose.yml link settings.
+
+
+6. Run the docker-compose build, it will create the custom container images
+docker-compose -f docker-compose.yml build
+
+7. Run the docker-compose up, it will start the containers
+docker-compose -f docker-compose.yml up
+
+
+Your services are now running.
+
+PHPMyAdmin - http://localhost:8090/
+Project HTTP - http://localhost:8080/
+Project HTTPS - https://localhost:8433/
+MemCache Server - localhost:11211
+MySQL Server - localhost:3307

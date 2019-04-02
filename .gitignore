@@ -1,0 +1,14 @@
+/.env
+/logs/*
+!/logs/.gitignore
+!/logs/apache2
+/logs/apache2/*
+!logs/apache2/.gitignore
+!/logs/mysql
+/logs/mysql/*
+!logs/mysql/.gitignore
+!/data/mysql
+/data/mysql/*
+!data/mysql/.gitignore
+/config/ssh/id_rsa
+/.vagrant
